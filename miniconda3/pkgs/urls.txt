@@ -72,3 +72,7 @@ https://repo.anaconda.com/pkgs/main/linux-64/conda-package-streaming-0.9.0-py312
 https://repo.anaconda.com/pkgs/main/linux-64/conda-package-handling-2.2.0-py312h06a4308_0.conda
 https://repo.anaconda.com/pkgs/main/linux-64/conda-24.3.0-py312h06a4308_0.conda
 https://repo.anaconda.com/pkgs/main/noarch/conda-libmamba-solver-24.1.0-pyhd3eb1b0_0.conda
+https://repo.anaconda.com/pkgs/main/linux-64/wheel-0.41.2-py39h06a4308_0.conda
+https://repo.anaconda.com/pkgs/main/linux-64/setuptools-68.2.2-py39h06a4308_0.conda
+https://repo.anaconda.com/pkgs/main/linux-64/pip-23.3.1-py39h06a4308_0.conda
+https://repo.anaconda.com/pkgs/main/linux-64/python-3.9.19-h955ad1f_0.conda
