@@ -1,0 +1,8 @@
+libdir=/groups/CS156b/2024/gobeavers/cs156b/miniconda3/lib
+includedir=/groups/CS156b/2024/gobeavers/cs156b/miniconda3/include
+
+Name: libsolv
+Description: Library for solving packages
+Version: 0.7.24
+Libs: -L${libdir} -lsolv
+Cflags: -I${includedir}

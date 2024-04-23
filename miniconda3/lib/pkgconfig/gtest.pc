@@ -1,0 +1,9 @@
+libdir=/groups/CS156b/2024/gobeavers/cs156b/miniconda3/lib
+includedir=/groups/CS156b/2024/gobeavers/cs156b/miniconda3/include
+
+Name: gtest
+Description: GoogleTest (without main() function)
+Version: 1.11.0
+URL: https://github.com/google/googletest
+Libs: -L${libdir} -lgtest -lpthread
+Cflags: -I${includedir} -DGTEST_HAS_PTHREAD=1

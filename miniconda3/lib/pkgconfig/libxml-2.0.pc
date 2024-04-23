@@ -1,0 +1,13 @@
+prefix=/groups/CS156b/2024/gobeavers/cs156b/miniconda3
+exec_prefix=${prefix}
+libdir=${exec_prefix}/lib
+includedir=${prefix}/include
+modules=1
+
+Name: libXML
+Version: 2.10.4
+Description: libXML library version2.
+Requires:
+Libs: -L${libdir} -lxml2
+Libs.private: -L/groups/CS156b/2024/gobeavers/cs156b/miniconda3/lib -lz -L/groups/CS156b/2024/gobeavers/cs156b/miniconda3/lib -llzma  -L/groups/CS156b/2024/gobeavers/cs156b/miniconda3/lib -L/groups/CS156b/2024/gobeavers/cs156b/miniconda3/lib -licui18n -licuuc -licudata -lm  
+Cflags: -I${includedir}/libxml2 -I/groups/CS156b/2024/gobeavers/cs156b/miniconda3/include 
