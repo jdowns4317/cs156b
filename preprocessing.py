@@ -13,7 +13,7 @@ main_folder = '../../../data/train'
 
 # Define the transformation to convert images to tensors
 transform = transforms.Compose([
-    transforms.Resize((60, 60)),  # Resize the image if necessary
+    transforms.Resize((30, 30)),  # Resize the image if necessary
     transforms.ToTensor()           # Convert images to PyTorch tensors
 ])
 
@@ -31,6 +31,8 @@ for col in outcomes:
     temp_df = temp_df.dropna(subset = [col])
     tensors = []
     for path in list(temp_df['Path']):
+        if path[0] != 't':
+            continue # skip the incorrect filepath discovered in train2023.csv
         tensors.append(load_image(os.path.join('../../../data', path)))
     dfs[col] = (tensors, list(temp_df[col]))
 
@@ -45,7 +47,7 @@ for path in list(test_df['Path']):
 # %%
 model = nn.Sequential(
     nn.Flatten(),
-    nn.Linear(3600, 20),
+    nn.Linear(900, 20),
     nn.ReLU(),
     nn.Dropout(0.5),
     nn.Linear(20, 3)
@@ -65,7 +67,7 @@ def train_nn(data_loader):
     data = torch.stack(data)
     target = torch.tensor(target)
     dataset = TensorDataset(data, target)
-    train_loader = DataLoader(dataset, batch_size=32, shuffle=True)
+    train_loader = DataLoader(dataset, batch_size=16, shuffle=True)
 
     model.train()
 
@@ -94,7 +96,7 @@ def get_output(train_data, test_data):
 
     test_data = torch.stack(test_data)
     test_dataset = TensorDataset(test_data)
-    test_loader = DataLoader(test_dataset, batch_size=32, shuffle=True)
+    test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
 
     model.eval()
     test_preds = torch.zeros(len(test_data), 1)
