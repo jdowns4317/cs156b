@@ -12,6 +12,11 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
+bs = 2
+num_epochs = 2
+w = 30
+h = 30
+
 class ImageDataset(Dataset):
     def __init__(self, dataframe, root_dir, transform=None, test=False):
         """
@@ -32,7 +37,7 @@ class ImageDataset(Dataset):
     def __getitem__(self, idx):
         img_name = os.path.join(self.root_dir, self.dataframe.iloc[idx]['Path'])
         image = Image.open(img_name).convert('RGB')
-        
+
         if self.transform:
             image = self.transform(image)
 
@@ -44,7 +49,7 @@ class ImageDataset(Dataset):
 
 # Transformation
 transform = transforms.Compose([
-    transforms.Resize((30, 30)),  # Resize the image
+    transforms.Resize((w, h)),  # Resize the image
     transforms.ToTensor()         # Convert images to PyTorch tensors
 ])
 
@@ -52,21 +57,28 @@ transform = transforms.Compose([
 train_df = pd.read_csv('../../../data/student_labels/train2023.csv')
 test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
 
+def create_feature_df(df, feature):
+    df = df.dropna(subset=[feature]).query("Path.str.contains('frontal')")
+    df = df[['Path', feature]].reset_index(drop=True)
+    df.rename(columns={feature: 'Feature'})
+    return df
+
 dl_dict = {}
 for feature in features:
-    train_dataset = ImageDataset(dataframe=train_df, root_dir='../../../data', transform=transform)
-    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)  # Adjust num_workers based on your system
+    feature_df = create_feature_df(train_df, feature)
+    train_dataset = ImageDataset(dataframe=feature_df, root_dir='../../../data', transform=transform)
+    train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True)  # Adjust num_workers based on your system
     dl_dict[feature] = train_loader
 
 
 # Training Function
-def train_nn(train_loader):
+def train_nn(model, train_loader):
     # Optimizer and Loss Function
     optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
     loss_fn = nn.CrossEntropyLoss()
 
     model.train()
-    for epoch in range(10):  # Number of epochs
+    for epoch in range(num_epochs):  # Number of epochs
         for data, target in train_loader:
             optimizer.zero_grad()     # Zero the gradients
             output = model(data)      # Forward pass
@@ -75,18 +87,18 @@ def train_nn(train_loader):
             optimizer.step()          # Update weights
     return model
 
-# Train the model
-model = train_nn(train_loader)
 
 # Function to get predictions
-def get_output(model, test_loader):
+def get_output(train_loader, test_loader):
     model = nn.Sequential(
         nn.Flatten(),
-        nn.Linear(900, 20),
+        nn.Linear(w*h, 20),
         nn.ReLU(),
         nn.Dropout(0.5),
         nn.Linear(20, 9)  # Adjusted output size for multi-label classification
     )
+
+    train_nn(model, train_loader)
 
 
     model.eval()
@@ -100,7 +112,7 @@ def get_output(model, test_loader):
 
 # Initialize Dataset and DataLoader for testing
 test_dataset = ImageDataset(dataframe=test_df, root_dir='../../../data', transform=transform, test=True)
-test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=bs, shuffle=True)
 
 classification_dict = {}
 classification_dict["Id"] = test_df['Id']
