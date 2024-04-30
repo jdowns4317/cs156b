@@ -7,7 +7,11 @@ from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
 import torch.optim as optim
 
-# Custom Dataset class
+
+features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly", 
+            "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
+            "Fracture", "Support Devices"]
+
 class ImageDataset(Dataset):
     def __init__(self, dataframe, root_dir, transform=None, test=False):
         """
@@ -26,7 +30,7 @@ class ImageDataset(Dataset):
         return len(self.dataframe)
 
     def __getitem__(self, idx):
-        img_name = os.path.join(self.root_dir, self.dataframe.iloc[idx, 0])
+        img_name = os.path.join(self.root_dir, self.dataframe.iloc[idx]['Path'])
         image = Image.open(img_name).convert('RGB')
         
         if self.transform:
@@ -35,7 +39,7 @@ class ImageDataset(Dataset):
         if self.test:
             return image
         else:
-            label = self.dataframe.iloc[idx, 1]
+            label = self.dataframe.iloc[idx]['Feature']
             return image, label
 
 # Transformation
@@ -48,25 +52,19 @@ transform = transforms.Compose([
 train_df = pd.read_csv('../../../data/student_labels/train2023.csv')
 test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
 
-# Initialize Dataset and DataLoader for training
-train_dataset = ImageDataset(dataframe=train_df, root_dir='../../../data', transform=transform)
-train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)  # Adjust num_workers based on your system
+dl_dict = {}
+for feature in features:
+    train_dataset = ImageDataset(dataframe=train_df, root_dir='../../../data', transform=transform)
+    train_loader = DataLoader(train_dataset, batch_size=16, shuffle=True)  # Adjust num_workers based on your system
+    dl_dict[feature] = train_loader
 
-# Neural Network Model
-model = nn.Sequential(
-    nn.Flatten(),
-    nn.Linear(900, 20),
-    nn.ReLU(),
-    nn.Dropout(0.5),
-    nn.Linear(20, 9)  # Adjusted output size for multi-label classification
-)
-
-# Optimizer and Loss Function
-optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
-loss_fn = nn.CrossEntropyLoss()
 
 # Training Function
 def train_nn(train_loader):
+    # Optimizer and Loss Function
+    optimizer = torch.optim.Adam(model.parameters(), lr=1e-3)
+    loss_fn = nn.CrossEntropyLoss()
+
     model.train()
     for epoch in range(10):  # Number of epochs
         for data, target in train_loader:
@@ -82,6 +80,15 @@ model = train_nn(train_loader)
 
 # Function to get predictions
 def get_output(model, test_loader):
+    model = nn.Sequential(
+        nn.Flatten(),
+        nn.Linear(900, 20),
+        nn.ReLU(),
+        nn.Dropout(0.5),
+        nn.Linear(20, 9)  # Adjusted output size for multi-label classification
+    )
+
+
     model.eval()
     test_preds = []
     with torch.no_grad():
@@ -95,9 +102,18 @@ def get_output(model, test_loader):
 test_dataset = ImageDataset(dataframe=test_df, root_dir='../../../data', transform=transform, test=True)
 test_loader = DataLoader(test_dataset, batch_size=16, shuffle=True)
 
-# Get predictions
-test_predictions = get_output(model, test_loader)
+classification_dict = {}
+classification_dict["Id"] = test_df['Id']
 
-# Output results
-test_df['Predictions'] = test_predictions
-test_df.to_csv('predictions.csv', index=False)
+for feature in features:
+    classification_dict[feature] = get_output(dl_dict[feature], test_loader)
+    classification_dict[feature] = [tensor.item() - 1 for tensor in classification_dict[feature]]
+
+# print(classification_dict)
+submission_df = pd.DataFrame(classification_dict)
+
+# print(submission_df.shape)
+submission_df.to_csv('gobeavers_submission.csv', index=False)
+
+
+
