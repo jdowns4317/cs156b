@@ -13,7 +13,7 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Fracture", "Support Devices"]
 
 bs = 2
-num_epochs = 2
+num_epochs = 3
 w = 30
 h = 30
 
@@ -44,7 +44,8 @@ class ImageDataset(Dataset):
         if self.test:
             return image
         else:
-            label = self.dataframe.iloc[idx]['Feature']
+            label = self.dataframe.iloc[idx]['Feature'] + 1
+            label = torch.tensor(label, dtype=torch.long)
             return image, label
 
 # Transformation
@@ -60,7 +61,7 @@ test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
 def create_feature_df(df, feature):
     df = df.dropna(subset=[feature]).query("Path.str.contains('frontal')")
     df = df[['Path', feature]].reset_index(drop=True)
-    df.rename(columns={feature: 'Feature'})
+    df.rename(columns={feature: 'Feature'}, inplace=True)
     return df
 
 dl_dict = {}
@@ -92,10 +93,10 @@ def train_nn(model, train_loader):
 def get_output(train_loader, test_loader):
     model = nn.Sequential(
         nn.Flatten(),
-        nn.Linear(w*h, 20),
+        nn.Linear(3*w*h, 20),
         nn.ReLU(),
         nn.Dropout(0.5),
-        nn.Linear(20, 9)  # Adjusted output size for multi-label classification
+        nn.Linear(20, 3)  # Adjusted output size for multi-label classification
     )
 
     train_nn(model, train_loader)
