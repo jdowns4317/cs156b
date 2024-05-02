@@ -12,10 +12,11 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
-bs = 2
+bs = 32
 num_epochs = 3
 w = 30
 h = 30
+nw = 4
 
 class ImageDataset(Dataset):
     def __init__(self, dataframe, root_dir, transform=None, test=False):
@@ -59,6 +60,7 @@ train_df = pd.read_csv('../../../data/student_labels/train2023.csv')
 test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
 
 def create_feature_df(df, feature):
+    df = df[df['Path'].str.startswith('t')]
     df = df.dropna(subset=[feature]).query("Path.str.contains('frontal')")
     df = df[['Path', feature]].reset_index(drop=True)
     df.rename(columns={feature: 'Feature'}, inplace=True)
@@ -68,7 +70,7 @@ dl_dict = {}
 for feature in features:
     feature_df = create_feature_df(train_df, feature)
     train_dataset = ImageDataset(dataframe=feature_df, root_dir='../../../data', transform=transform)
-    train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True)  # Adjust num_workers based on your system
+    train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=nw)  # Adjust num_workers based on your system
     dl_dict[feature] = train_loader
 
 
@@ -113,7 +115,7 @@ def get_output(train_loader, test_loader):
 
 # Initialize Dataset and DataLoader for testing
 test_dataset = ImageDataset(dataframe=test_df, root_dir='../../../data', transform=transform, test=True)
-test_loader = DataLoader(test_dataset, batch_size=bs, shuffle=True)
+test_loader = DataLoader(test_dataset, batch_size=bs, shuffle=True, num_workers=nw)
 
 classification_dict = {}
 classification_dict["Id"] = test_df['Id']
