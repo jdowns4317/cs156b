@@ -56,6 +56,7 @@ transform = transforms.Compose([
 ])
 
 # Load CSVs
+print("DEBUG starting model")
 train_df = pd.read_csv('../../../data/student_labels/train2023.csv')
 test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
 
@@ -73,6 +74,7 @@ for feature in features:
     train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=nw)  # Adjust num_workers based on your system
     dl_dict[feature] = train_loader
 
+print("DEBUG data loaded")
 
 # Training Function
 def train_nn(model, train_loader):
@@ -117,17 +119,19 @@ def get_output(train_loader, test_loader):
 test_dataset = ImageDataset(dataframe=test_df, root_dir='../../../data', transform=transform, test=True)
 test_loader = DataLoader(test_dataset, batch_size=bs, shuffle=True, num_workers=nw)
 
+print("DEBUG test data loaded")
+
 classification_dict = {}
 classification_dict["Id"] = test_df['Id']
 
 for feature in features:
+    print(f"DEBUG running {feature}")
     classification_dict[feature] = get_output(dl_dict[feature], test_loader)
-    classification_dict[feature] = [tensor.item() - 1 for tensor in classification_dict[feature]]
+    classification_dict[feature] = [pred - 1 for pred in classification_dict[feature]]
 
-# print(classification_dict)
+print("DEBUG exporting data")
 submission_df = pd.DataFrame(classification_dict)
 
-# print(submission_df.shape)
 submission_df.to_csv('gobeavers_submission.csv', index=False)
 
 
