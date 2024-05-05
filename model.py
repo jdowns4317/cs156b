@@ -116,7 +116,7 @@ def get_output(train_loader, test_loader):
             pred = output.argmax(dim=1, keepdim=True)
             test_preds.extend(pred.flatten().tolist())
             
-            probabilities = F.softmax(logits_adjusted, dim=1)  # converting logits to probabilities
+            probabilities = F.softmax(output, dim=1)  # converting logits to probabilities
             class_labels = torch.tensor([-1, 0, 1], device=probabilities.device)  # class labels tensor
             # Calculating expected values: sum of (probability * class_label) across each class
             expected_values = torch.sum(probabilities * class_labels, dim=1)  # shape [batch_size]
