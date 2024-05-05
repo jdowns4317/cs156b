@@ -8,10 +8,6 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-# TODO investigate CUDA for GPUS
-# TODO design specialized architectures
-# frontal vs lateral, etc
-
 
 features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly", 
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
@@ -57,9 +53,7 @@ class ImageDataset(Dataset):
 # Transformation
 transform = transforms.Compose([
     transforms.Resize((w, h)),  # Resize the image
-    transforms.ToTensor(),         # Convert images to PyTorch tensors
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) 
-    # TODO investigate if we should be using RGB or not
+    transforms.ToTensor()         # Convert images to PyTorch tensors
 ])
 
 # Load CSVs
@@ -103,20 +97,11 @@ def train_nn(model, train_loader):
 # Function to get predictions
 def get_output(train_loader, test_loader):
     model = nn.Sequential(
-        nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1), # Convolutional layer
-        nn.ReLU(),                                            # Activation layer
-        nn.MaxPool2d(kernel_size=2, stride=2),                # Pooling layer
-        nn.Dropout(0.5),                                      # Dropout layer
-        
-        nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),# Another convolutional layer
-        nn.ReLU(),                                            # Activation layer
-        nn.MaxPool2d(kernel_size=2, stride=2),                # Pooling layer
-        nn.Dropout(0.5),                                      # Dropout layer
-       
-        nn.Flatten(),                                         # Flatten layer for transitioning to fully connected layer
-        nn.Linear(64 * (w//4) * (h//4), 128),                 # Fully connected layer
-        nn.ReLU(),                                            # Activation layer
-        nn.Linear(128, 3)                         # Output layer
+        nn.Flatten(),
+        nn.Linear(3*w*h, 20),
+        nn.ReLU(),
+        nn.Dropout(0.5),
+        nn.Linear(20, 3)  # Adjusted output size for multi-label classification
     )
 
     train_nn(model, train_loader)
@@ -159,10 +144,10 @@ for feature in features:
 
 print("DEBUG exporting data")
 submission_df = pd.DataFrame(classification_dict)
-submission_df.to_csv('cnn_gobeavers_submission.csv', index=False)
+submission_df.to_csv('gobeavers_submission.csv', index=False)
 
 probs_df = pd.DataFrame(probs_dict)
-probs_df.to_csv('cnn_probs_submission.csv', index=False)
+probs_df.to_csv('probs_submission.csv', index=False)
 
 
 
