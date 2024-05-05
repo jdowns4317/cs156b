@@ -6,6 +6,7 @@ from torchvision import transforms
 from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
 import torch.optim as optim
+import torch.nn.functional as F
 
 
 features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly", 
@@ -108,12 +109,21 @@ def get_output(train_loader, test_loader):
 
     model.eval()
     test_preds = []
+    test_probs = []
     with torch.no_grad():
         for data in test_loader:
             output = model(data)
             pred = output.argmax(dim=1, keepdim=True)
             test_preds.extend(pred.flatten().tolist())
-    return test_preds
+            
+            probabilities = F.softmax(logits_adjusted, dim=1)  # converting logits to probabilities
+            class_labels = torch.tensor([-1, 0, 1], device=probabilities.device)  # class labels tensor
+            # Calculating expected values: sum of (probability * class_label) across each class
+            expected_values = torch.sum(probabilities * class_labels, dim=1)  # shape [batch_size]
+            test_probs.extend(expected_values.flatten().tolist())
+
+
+    return test_preds, test_probs
 
 # Initialize Dataset and DataLoader for testing
 test_dataset = ImageDataset(dataframe=test_df, root_dir='../../../data', transform=transform, test=True)
@@ -124,15 +134,20 @@ print("DEBUG test data loaded")
 classification_dict = {}
 classification_dict["Id"] = test_df['Id']
 
+probs_dict = {}
+probs_dict["Id"] = test_df['Id']
+
 for feature in features:
     print(f"DEBUG running {feature}")
-    classification_dict[feature] = get_output(dl_dict[feature], test_loader)
+    classification_dict[feature], probs_dict[feature] = get_output(dl_dict[feature], test_loader)
     classification_dict[feature] = [pred - 1 for pred in classification_dict[feature]]
 
 print("DEBUG exporting data")
 submission_df = pd.DataFrame(classification_dict)
-
 submission_df.to_csv('gobeavers_submission.csv', index=False)
+
+probs_df = pd.DataFrame(probs_dict)
+probs_df.to_csv('probs_submission.csv', index=False)
 
 
 
