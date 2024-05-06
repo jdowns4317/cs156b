@@ -15,7 +15,8 @@
 #SBATCH --partition=gpu
 
 source /home/jdowns/.bashrc
+module load cuda/10.2
 
-conda activate gb156
+conda activate gb
 
 python model.py

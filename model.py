@@ -8,9 +8,9 @@ import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
 
-# TODO investigate CUDA for GPUS
-# TODO design specialized architectures
-# frontal vs lateral, etc
+# Check CUDA availability and select the appropriate device
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+print(f"Using device: {device}")
 
 
 features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly", 
@@ -48,11 +48,11 @@ class ImageDataset(Dataset):
             image = self.transform(image)
 
         if self.test:
-            return image
+            return image.to(device)
         else:
             label = self.dataframe.iloc[idx]['Feature'] + 1
             label = torch.tensor(label, dtype=torch.long)
-            return image, label
+            return image.to(device), label.to(device)
 
 # Transformation
 transform = transforms.Compose([
@@ -113,6 +113,7 @@ def train_nn(model, train_loader):
     model.train()
     for epoch in range(num_epochs):  # Number of epochs
         for data, target in train_loader:
+            data, target = data.to(device), target.to(device)
             optimizer.zero_grad()     # Zero the gradients
             output = model(data)      # Forward pass
             loss = loss_fn(output, target)  # Compute loss
@@ -139,6 +140,9 @@ def get_output(train_loader, test_loader):
         nn.ReLU(),                                            # Activation layer
         nn.Linear(128, 3)                         # Output layer
     )
+    if torch.cuda.is_available():
+        model = nn.DataParallel(model)
+    model.to(device)
 
     train_nn(model, train_loader)
 
@@ -148,6 +152,7 @@ def get_output(train_loader, test_loader):
     test_probs = []
     with torch.no_grad():
         for data in test_loader:
+            data = data.to(device)
             output = model(data)
             pred = output.argmax(dim=1, keepdim=True)
             test_preds.extend(pred.flatten().tolist())
