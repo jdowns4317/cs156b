@@ -16,7 +16,7 @@ class SimpleNet(nn.Module):
 
 # Check if CUDA is available
 if torch.cuda.is_available():
-    device = torch.device("cuda:0")  # Use the first GPU
+    device = torch.device("cuda:10.2")  # Use the first GPU
     print("CUDA is available. Running on GPU:", torch.cuda.get_device_name(0))
 else:
     device = torch.device("cpu")
