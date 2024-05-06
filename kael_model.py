@@ -108,7 +108,10 @@ def get_output(train_loader, test_loader):
         nn.Linear(64 * (w//4) * (h//4), 128),
         nn.ReLU(),
         nn.Linear(128, 3)
-    ).to(device)
+    )
+    if torch.cuda.is_available():
+        model = nn.DataParallel(model)
+    model.to(device)
 
     train_nn(model, train_loader)
 
