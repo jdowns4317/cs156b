@@ -16,6 +16,6 @@
 
 source /home/jdowns/.bashrc
 
-conda activate gb156
+conda activate gb
 
 python old_model.py
