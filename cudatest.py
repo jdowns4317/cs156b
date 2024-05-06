@@ -42,7 +42,7 @@ model = nn.Sequential(
         nn.MaxPool2d(kernel_size=2, stride=2),
         nn.Dropout(0.5),
         nn.Flatten(),
-        nn.Linear(64 * (w//4) * (h//4), 128),
+        nn.Linear(64 * 1 * 1, 128),
         nn.ReLU(),
         nn.Linear(128, 3)
     )
