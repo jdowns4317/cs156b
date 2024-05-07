@@ -7,9 +7,6 @@ from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
 import torch.optim as optim
 import torch.nn.functional as F
-import torch.multiprocessing as mp
-
-mp.set_start_method('spawn', force=True)
 
 # Check CUDA availability and select the appropriate device
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -20,10 +17,10 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
-bs = 32
-num_epochs = 3
-w = 30
-h = 30
+bs = 256
+num_epochs = 10
+w = 256
+h = 256
 nw = 4
 
 class ImageDataset(Dataset):
@@ -216,11 +213,11 @@ probs_dict_final["Id"] = probs_dict["Id"]
 print("DEBUG exporting data")
 submission_df = pd.DataFrame(classification_dict_final)
 submission_df = submission_df.sort_values(by = "Id")
-submission_df.to_csv('results/sep_submission.csv', index=False)
+submission_df.to_csv('results/long_submission.csv', index=False)
 
 probs_df = pd.DataFrame(probs_dict_final)
 probs_df = probs_df.sort_values(by = "Id")
-probs_df.to_csv('results/sep_probs_submission.csv', index=False)
+probs_df.to_csv('results/long_probs_submission.csv', index=False)
 
 
 

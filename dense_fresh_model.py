@@ -2,7 +2,7 @@ import os
 from PIL import Image
 import pandas as pd
 import torch
-from torchvision import transforms
+from torchvision import transforms, models
 from torch.utils.data import Dataset, DataLoader
 import torch.nn as nn
 import torch.optim as optim
@@ -20,10 +20,10 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
-bs = 32
-num_epochs = 3
-w = 30
-h = 30
+bs = 256
+num_epochs = 6
+w = 256
+h = 256
 nw = 4
 
 class ImageDataset(Dataset):
@@ -59,10 +59,11 @@ class ImageDataset(Dataset):
 
 # Transformation
 transform = transforms.Compose([
-    transforms.Resize((w, h)),  # Resize the image
-    transforms.ToTensor(),         # Convert images to PyTorch tensors
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) 
-    # TODO investigate if we should be using RGB or not
+    transforms.Resize(256),                # Resize the image to 256x256 pixels
+    transforms.CenterCrop(224),            # Crop the image to 224x224 pixels
+    transforms.ToTensor(),                 # Convert the image to a PyTorch tensor
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],  # Normalize the image
+                         std=[0.229, 0.224, 0.225])
 ])
 
 # Load CSVs
@@ -127,22 +128,11 @@ def train_nn(model, train_loader):
 
 # Function to get predictions
 def get_output(train_loader, test_loader):
-    model = nn.Sequential(
-        nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1), # Convolutional layer
-        nn.ReLU(),                                            # Activation layer
-        nn.MaxPool2d(kernel_size=2, stride=2),                # Pooling layer
-        nn.Dropout(0.5),                                      # Dropout layer
-        
-        nn.Conv2d(32, 64, kernel_size=3, stride=1, padding=1),# Another convolutional layer
-        nn.ReLU(),                                            # Activation layer
-        nn.MaxPool2d(kernel_size=2, stride=2),                # Pooling layer
-        nn.Dropout(0.5),                                      # Dropout layer
-       
-        nn.Flatten(),                                         # Flatten layer for transitioning to fully connected layer
-        nn.Linear(64 * (w//4) * (h//4), 128),                 # Fully connected layer
-        nn.ReLU(),                                            # Activation layer
-        nn.Linear(128, 3)                         # Output layer
-    )
+    model = models.densenet121(pretrained=False)
+    num_features = model.classifier.in_features  # Get the number of inputs for the existing layer
+    model.classifier = torch.nn.Linear(num_features, 3)  # Replace with a new layer with 3 outputs
+
+
     if torch.cuda.is_available():
         model = nn.DataParallel(model)
     model.to(device)
@@ -216,11 +206,11 @@ probs_dict_final["Id"] = probs_dict["Id"]
 print("DEBUG exporting data")
 submission_df = pd.DataFrame(classification_dict_final)
 submission_df = submission_df.sort_values(by = "Id")
-submission_df.to_csv('results/sep_submission.csv', index=False)
+submission_df.to_csv('results/dense_fresh_submission.csv', index=False)
 
 probs_df = pd.DataFrame(probs_dict_final)
 probs_df = probs_df.sort_values(by = "Id")
-probs_df.to_csv('results/sep_probs_submission.csv', index=False)
+probs_df.to_csv('results/dense_fresh_probs_submission.csv', index=False)
 
 
 

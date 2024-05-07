@@ -20,10 +20,10 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
-bs = 32
+bs = 256
 num_epochs = 3
-w = 30
-h = 30
+w = 256
+h = 256
 nw = 4
 
 class ImageDataset(Dataset):
@@ -45,7 +45,7 @@ class ImageDataset(Dataset):
 
     def __getitem__(self, idx):
         img_name = os.path.join(self.root_dir, self.dataframe.iloc[idx]['Path'])
-        image = Image.open(img_name).convert('RGB')
+        image = Image.open(img_name).convert('L')
 
         if self.transform:
             image = self.transform(image)
@@ -59,10 +59,9 @@ class ImageDataset(Dataset):
 
 # Transformation
 transform = transforms.Compose([
-    transforms.Resize((w, h)),  # Resize the image
-    transforms.ToTensor(),         # Convert images to PyTorch tensors
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]) 
-    # TODO investigate if we should be using RGB or not
+    transforms.Resize((w, h)),
+    transforms.ToTensor(),
+    transforms.Normalize(mean=[0.485], std=[0.229])  # Adjusted for one channel
 ])
 
 # Load CSVs
@@ -128,7 +127,7 @@ def train_nn(model, train_loader):
 # Function to get predictions
 def get_output(train_loader, test_loader):
     model = nn.Sequential(
-        nn.Conv2d(3, 32, kernel_size=3, stride=1, padding=1), # Convolutional layer
+        nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1), # Convolutional layer
         nn.ReLU(),                                            # Activation layer
         nn.MaxPool2d(kernel_size=2, stride=2),                # Pooling layer
         nn.Dropout(0.5),                                      # Dropout layer
@@ -141,7 +140,7 @@ def get_output(train_loader, test_loader):
         nn.Flatten(),                                         # Flatten layer for transitioning to fully connected layer
         nn.Linear(64 * (w//4) * (h//4), 128),                 # Fully connected layer
         nn.ReLU(),                                            # Activation layer
-        nn.Linear(128, 3)                         # Output layer
+        nn.Linear(128, 1)                         # Output layer
     )
     if torch.cuda.is_available():
         model = nn.DataParallel(model)
@@ -216,11 +215,11 @@ probs_dict_final["Id"] = probs_dict["Id"]
 print("DEBUG exporting data")
 submission_df = pd.DataFrame(classification_dict_final)
 submission_df = submission_df.sort_values(by = "Id")
-submission_df.to_csv('results/sep_submission.csv', index=False)
+submission_df.to_csv('results/grey_submission.csv', index=False)
 
 probs_df = pd.DataFrame(probs_dict_final)
 probs_df = probs_df.sort_values(by = "Id")
-probs_df.to_csv('results/sep_probs_submission.csv', index=False)
+probs_df.to_csv('results/grey_probs_submission.csv', index=False)
 
 
 
