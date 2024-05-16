@@ -4,9 +4,9 @@
 #SBATCH --output=/central/groups/CS156b/2024/gobeavers/cs156b/%j.out
 #SBATCH --error=/central/groups/CS156b/2024/gobeavers/cs156b/%j.err
 #SBATCH -A CS156b
-#SBATCH --time=14:00:00
+#SBATCH --time=160:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
 #SBATCH --gres gpu:4
 #SBATCH --mail-user=jdowns@caltech.edu

@@ -2,3 +2,4 @@ miniconda3/
 *.err
 *.out
 .DS_STORE
+key.txt

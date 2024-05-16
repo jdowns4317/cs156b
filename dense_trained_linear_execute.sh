@@ -6,7 +6,7 @@
 #SBATCH -A CS156b
 #SBATCH --time=160:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=4
 #SBATCH --mem=64G
 #SBATCH --gres gpu:4
 #SBATCH --mail-user=jdowns@caltech.edu
@@ -19,4 +19,4 @@ module load cuda/10.2
 
 conda activate gb
 
-python dense_fresh_model.py
+python dense_trained_linear_model.py

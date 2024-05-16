@@ -24,7 +24,7 @@ bs = 256
 num_epochs = 6
 w = 256
 h = 256
-nw = 4
+nw = 8
 
 class ImageDataset(Dataset):
     def __init__(self, dataframe, root_dir, transform=None, test=False):
@@ -100,8 +100,8 @@ for feature in features:
     frontal_train_dataset = ImageDataset(dataframe=frontal_feature_df, root_dir='../../../data', transform=transform)
     lateral_train_dataset = ImageDataset(dataframe=lateral_feature_df, root_dir='../../../data', transform=transform)
     # train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=nw)  # Adjust num_workers based on your system
-    frontal_train_loader = DataLoader(frontal_train_dataset, batch_size=bs, shuffle=True, num_workers=nw)
-    lateral_train_loader = DataLoader(lateral_train_dataset, batch_size=bs, shuffle=True, num_workers=nw)
+    frontal_train_loader = DataLoader(frontal_train_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
+    lateral_train_loader = DataLoader(lateral_train_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
     dl_dict[feature + "_frontal"] = frontal_train_loader
     dl_dict[feature + "_lateral"] = lateral_train_loader
 
@@ -175,8 +175,8 @@ frontal_df = create_test_frontal_df(test_df)
 lateral_df = create_test_lateral_df(test_df)
 frontal_test_dataset = ImageDataset(dataframe=frontal_df, root_dir='../../../data', transform=transform)
 lateral_test_dataset = ImageDataset(dataframe=lateral_df, root_dir='../../../data', transform=transform)
-frontal_test_loader = DataLoader(frontal_test_dataset, batch_size=bs, shuffle=True, num_workers=nw)
-lateral_test_loader = DataLoader(lateral_test_dataset, batch_size=bs, shuffle=True, num_workers=nw)
+frontal_test_loader = DataLoader(frontal_test_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
+lateral_test_loader = DataLoader(lateral_test_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
 test_dl_dict["frontal"] = frontal_test_loader
 test_dl_dict["lateral"] = lateral_test_loader
 

@@ -20,8 +20,8 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
-bs = 256
-num_epochs = 6
+bs = 64
+num_epochs = 3
 w = 256
 h = 256
 nw = 4
@@ -101,8 +101,8 @@ for feature in features:
     frontal_train_dataset = ImageDataset(dataframe=frontal_feature_df, root_dir='../../../data', transform=transform)
     lateral_train_dataset = ImageDataset(dataframe=lateral_feature_df, root_dir='../../../data', transform=transform)
     # train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=nw)  # Adjust num_workers based on your system
-    frontal_train_loader = DataLoader(frontal_train_dataset, batch_size=bs, shuffle=True, num_workers=nw)
-    lateral_train_loader = DataLoader(lateral_train_dataset, batch_size=bs, shuffle=True, num_workers=nw)
+    frontal_train_loader = DataLoader(frontal_train_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
+    lateral_train_loader = DataLoader(lateral_train_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
     dl_dict[feature + "_frontal"] = frontal_train_loader
     dl_dict[feature + "_lateral"] = lateral_train_loader
 
@@ -116,6 +116,7 @@ def train_nn(model, train_loader):
 
     model.train()
     for epoch in range(num_epochs):  # Number of epochs
+        print(f"DEBUG epoch: {epoch}")
         for data, target in train_loader:
             data, target = data.to(device), target.to(device)
             optimizer.zero_grad()     # Zero the gradients
@@ -176,8 +177,8 @@ frontal_df = create_test_frontal_df(test_df)
 lateral_df = create_test_lateral_df(test_df)
 frontal_test_dataset = ImageDataset(dataframe=frontal_df, root_dir='../../../data', transform=transform)
 lateral_test_dataset = ImageDataset(dataframe=lateral_df, root_dir='../../../data', transform=transform)
-frontal_test_loader = DataLoader(frontal_test_dataset, batch_size=bs, shuffle=True, num_workers=nw)
-lateral_test_loader = DataLoader(lateral_test_dataset, batch_size=bs, shuffle=True, num_workers=nw)
+frontal_test_loader = DataLoader(frontal_test_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
+lateral_test_loader = DataLoader(lateral_test_dataset, batch_size=bs, shuffle=True, num_workers=nw, pin_memory=True)
 test_dl_dict["frontal"] = frontal_test_loader
 test_dl_dict["lateral"] = lateral_test_loader
 
@@ -194,7 +195,9 @@ probs_dict_final = {}
 for feature in features:
     print(f"DEBUG running {feature}")
     classification_dict[feature + "_frontal"], probs_dict[feature + "_frontal"] = get_output(dl_dict[feature + "_frontal"], test_dl_dict["frontal"])
+    print(f"DEBUG got frontal")
     classification_dict[feature + "_lateral"], probs_dict[feature + "_lateral"] = get_output(dl_dict[feature + "_lateral"], test_dl_dict["lateral"])
+    print(f"DEBUG got lateral")
     classification_dict[feature + "_frontal"] = [pred - 1 for pred in classification_dict[feature + "_frontal"]]
     classification_dict[feature + "_lateral"] = [pred - 1 for pred in classification_dict[feature + "_lateral"]]
     classification_dict_final[feature] = list(classification_dict[feature + "_frontal"]) + list(classification_dict[feature + "_lateral"])
