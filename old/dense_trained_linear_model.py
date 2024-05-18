@@ -9,6 +9,7 @@ import torch.optim as optim
 import torch.nn.functional as F
 
 # Check CUDA availability and select the appropriate device
+torch.backends.cudnn.benchmark = True
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 print(f"Using device: {device}")
 
