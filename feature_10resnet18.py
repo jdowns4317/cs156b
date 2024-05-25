@@ -16,7 +16,7 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
 feature = sys.argv[1]
 
 bs = 64
-num_epochs = 5
+num_epochs = 10
 w = 256
 h = 256
 nw = 4
@@ -55,10 +55,11 @@ class ImageDataset(Dataset):
 
 # Transformation
 transform = transforms.Compose([
-    transforms.Resize(256),
-    transforms.CenterCrop(224),
-    transforms.ToTensor(),
-    transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225])
+    transforms.Resize(256),                # Resize the image to 256x256 pixels
+    transforms.CenterCrop(224),            # Crop the image to 224x224 pixels
+    transforms.ToTensor(),                 # Convert the image to a PyTorch tensor
+    transforms.Normalize(mean=[0.485, 0.456, 0.406],  # Normalize the image
+                         std=[0.229, 0.224, 0.225])
 ])
 
 # Load CSVs
@@ -113,10 +114,9 @@ def train_nn(model, train_loader):
 
 # Function to get predictions
 def get_output(train_loader, test_loader):
-    model = models.densenet121(weights='DEFAULT')
-    num_features = model.classifier.in_features  # Get the number of inputs for the existing layer
-    model.classifier = torch.nn.Linear(num_features, 3)  # Replace with a new layer with 3 outputs
-
+    model = models.resnet18(weights='DEFAULT')
+    num_features = model.fc.in_features
+    model.fc = nn.Linear(num_features, 3)
 
     train_nn(model, train_loader)
 
@@ -190,8 +190,8 @@ submission_df = pd.DataFrame(classification_dict_final)
 submission_df = submission_df.sort_values(by = "Id")
 
 feature_under = feature.replace(" ", "_")
-submission_df.to_csv(f'results/densenet_{feature_under}.csv', index=False)
+submission_df.to_csv(f'results/10resnet18_{feature_under}.csv', index=False)
 probs_df = pd.DataFrame(probs_dict_final)
 probs_df = probs_df.sort_values(by = "Id")
-probs_df.to_csv(f'results/densenet_probs_{feature_under}.csv', index=False)
+probs_df.to_csv(f'results/10resnet18_probs_{feature_under}.csv', index=False)
 

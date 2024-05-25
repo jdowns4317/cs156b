@@ -19,4 +19,4 @@ module load cuda/10.2
 
 conda activate gb
 
-python feature_resnet.py "Pleural Other"
+python feature_resnet18.py "Lung Opacity"

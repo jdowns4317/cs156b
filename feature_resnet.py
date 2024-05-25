@@ -16,7 +16,7 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
 feature = sys.argv[1]
 
 bs = 64
-num_epochs = 3
+num_epochs = 5
 w = 256
 h = 256
 nw = 4
@@ -114,11 +114,10 @@ def train_nn(model, train_loader):
 
 # Function to get predictions
 def get_output(train_loader, test_loader):
-    model = models.densenet121(weights='DEFAULT')
-    num_features = model.classifier.in_features  # Get the number of inputs for the existing layer
-    model.classifier = torch.nn.Linear(num_features, 3)  # Replace with a new layer with 3 outputs
-
-    model
+    model = models.resnet50(weights='DEFAULT')
+    
+    num_features = model.fc.in_features
+    model.fc = nn.Linear(num_features, 3)
 
     train_nn(model, train_loader)
 
@@ -192,8 +191,8 @@ submission_df = pd.DataFrame(classification_dict_final)
 submission_df = submission_df.sort_values(by = "Id")
 
 feature_under = feature.replace(" ", "_")
-submission_df.to_csv(f'results/dense_{feature_under}.csv', index=False)
+submission_df.to_csv(f'results/resnet_{feature_under}.csv', index=False)
 probs_df = pd.DataFrame(probs_dict_final)
 probs_df = probs_df.sort_values(by = "Id")
-probs_df.to_csv(f'results/dense_probs_{feature_under}.csv', index=False)
+probs_df.to_csv(f'results/resnet_probs_{feature_under}.csv', index=False)
 

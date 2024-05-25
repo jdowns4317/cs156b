@@ -1,0 +1,9 @@
+sbatch feature_resnet18_no_finding.sh
+sbatch feature_resnet18_enlarged_cardiomediastinum.sh
+sbatch feature_resnet18_cardiomegaly.sh
+sbatch feature_resnet18_lung_opacity.sh
+sbatch feature_resnet18_pneumonia.sh
+sbatch feature_resnet18_pleural_effusion.sh
+sbatch feature_resnet18_pleural_other.sh
+sbatch feature_resnet18_fracture.sh
+sbatch feature_resnet18_support_devices.sh
