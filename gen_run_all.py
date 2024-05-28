@@ -2,7 +2,7 @@ features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly",
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
-model = "10resnet18"
+model = "resnet18cuda"
 
 body = []
 for feature in features:

@@ -1,0 +1,9 @@
+sbatch feature_resnetcuda_no_finding.sh
+sbatch feature_resnetcuda_enlarged_cardiomediastinum.sh
+sbatch feature_resnetcuda_cardiomegaly.sh
+sbatch feature_resnetcuda_lung_opacity.sh
+sbatch feature_resnetcuda_pneumonia.sh
+sbatch feature_resnetcuda_pleural_effusion.sh
+sbatch feature_resnetcuda_pleural_other.sh
+sbatch feature_resnetcuda_fracture.sh
+sbatch feature_resnetcuda_support_devices.sh

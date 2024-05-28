@@ -1,0 +1,9 @@
+sbatch feature_10densenet_no_finding.sh
+sbatch feature_10densenet_enlarged_cardiomediastinum.sh
+sbatch feature_10densenet_cardiomegaly.sh
+sbatch feature_10densenet_lung_opacity.sh
+sbatch feature_10densenet_pneumonia.sh
+sbatch feature_10densenet_pleural_effusion.sh
+sbatch feature_10densenet_pleural_other.sh
+sbatch feature_10densenet_fracture.sh
+sbatch feature_10densenet_support_devices.sh

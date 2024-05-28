@@ -2,7 +2,7 @@ features = features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly
             "Lung Opacity", "Pneumonia", "Pleural Effusion", "Pleural Other",
             "Fracture", "Support Devices"]
 
-new_model = "10resnet18"
+new_model = "resnet18cuda"
 
 with open('feature_resnet_pneumonia.sh', 'r') as f:
     base = f.readlines()
