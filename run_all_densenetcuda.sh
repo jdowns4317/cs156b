@@ -1,9 +1,0 @@
-sbatch feature_densenetcuda_no_finding.sh
-sbatch feature_densenetcuda_enlarged_cardiomediastinum.sh
-sbatch feature_densenetcuda_cardiomegaly.sh
-sbatch feature_densenetcuda_lung_opacity.sh
-sbatch feature_densenetcuda_pneumonia.sh
-sbatch feature_densenetcuda_pleural_effusion.sh
-sbatch feature_densenetcuda_pleural_other.sh
-sbatch feature_densenetcuda_fracture.sh
-sbatch feature_densenetcuda_support_devices.sh

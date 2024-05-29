@@ -3,3 +3,4 @@ miniconda3/
 *.out
 .DS_STORE
 key.txt
+*.sh
