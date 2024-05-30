@@ -8,7 +8,7 @@ features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
             'Fracture', 'Support Devices']
 
 # TODO change averages accordingly
-averages = []
+averages = ['Fracture', 'Lung Opacity', 'Pleural Other', 'Support Devices']
 
 labels = pd.read_csv('../../../data/student_labels/train2023.csv')
 test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
@@ -26,5 +26,5 @@ for feature in features:
 
 data = pd.DataFrame(data_df)
 
-data.to_csv(f'results/joined_{model}.csv', index=False)
+data.to_csv(f'results/best_{model}.csv', index=False)
 print("done")

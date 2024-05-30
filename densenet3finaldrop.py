@@ -81,14 +81,14 @@ test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
 
 def create_feature_df(df, feature):
     df = df[df['Path'].str.startswith('t')].copy()
-    df.dropna(inplace=True)
+    df.dropna(subset=[feature], inplace=True)
     df = df[['Path', feature]].reset_index(drop=True)
     df.rename(columns={feature: 'Feature'}, inplace=True)
     return df
 
 feature_df = create_feature_df(train_df, feature)
 train_dataset = ImageDataset(dataframe=feature_df, root_dir='../../../data', transform=transform)
-train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True)
+train_loader = DataLoader(train_dataset, batch_size=bs, shuffle=True, num_workers=4)
 
 print("DEBUG data loaded")
 
