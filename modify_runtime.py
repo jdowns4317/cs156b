@@ -5,7 +5,7 @@ features = features = ["No Finding", "Enlarged Cardiomediastinum", "Cardiomegaly
 models = ['densenet', 'resnet']
 num_epochs = ['2', '3', '5', '10']
 # types = ['', 'drop', 'parallel']
-types = ['parallel']
+types = ['drop']
 
 for model in models:
     for ne in num_epochs:
@@ -16,7 +16,7 @@ for model in models:
                 with open(f'feature_{new_model}_{feature.lower().replace(" ", "_")}.sh', 'r') as f:
                     body = f.readlines()
                 
-                body = [line.replace("cpus-per-task=1", "cpus-per-task=5") for line in body]
+                body = [line.replace("96", "72") for line in body]
 
                 with open(f'feature_{new_model}_{feature.lower().replace(" ", "_")}.sh', 'w') as f:
                     f.writelines(body)

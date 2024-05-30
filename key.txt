@@ -1,16 +1,3 @@
-96
-resnet:
-2 epochs: 41724872-0
-3 epochs: 
-5 epochs: 41724881-9
-10 epochs: 41724891-9
-
-densenet:
-2 epochs: 41725168-6
-3 epochs: 
-5 epochs: 41725178-6
-10 epochs: 41725188-6
-
 drop nans:
 resnet:
 2 epochs: 41724901-9
@@ -19,10 +6,10 @@ resnet:
 10 epochs: 41724919-7
 
 densenet:
-2 epochs: 41725141-9
+2 epochs: 
 3 epochs: 
-5 epochs: 41725150-8
-10 epochs: 41725159-7
+5 epochs: 
+10 epochs: 
 
 72
 parallel:
@@ -33,7 +20,7 @@ resnet:
 10 epochs: 41724965-3
 
 densenet:
-2 epochs: 41725114-2
+2 epochs: 41750538-6
 3 epochs: 
-5 epochs: 41725123-1
-10 epochs: 41725132-0
+5 epochs: 41750547-5
+10 epochs: 41750557-5
