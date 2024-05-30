@@ -116,7 +116,7 @@ def train_nn(model, train_loader):
 def get_output(train_loader, test_loader):
     model = densenet121(weights=DenseNet121_Weights.DEFAULT)
     num_features = model.classifier.in_features
-	model.classifier = torch.nn.Linear(num_features, 1)
+    model.classifier = torch.nn.Linear(num_features, 1)
     
     model = model.to(device)
 

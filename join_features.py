@@ -1,14 +1,14 @@
 import pandas as pd
 import numpy as np
 
-model = "densenetcuda"
+model = "2resnetfinalparallel"
 
 features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
             'Lung Opacity', 'Pneumonia', 'Pleural Effusion', 'Pleural Other',
             'Fracture', 'Support Devices']
 
 # TODO change averages accordingly
-averages = ['No Finding', 'Support Devices']
+averages = []
 
 labels = pd.read_csv('../../../data/student_labels/train2023.csv')
 test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
@@ -21,7 +21,7 @@ for feature in features:
         mean = labels[feature].mean()
         data_df[feature] = [mean] * len(data_df['Id'])
     else:
-        curr_df = pd.read_csv(f"results/{model}_{feature.replace(' ', '_')}.csv")
+        curr_df = pd.read_csv(f"results/{model}{feature.replace(' ', '_')}.csv")
         data_df[feature] = curr_df[feature]
 
 data = pd.DataFrame(data_df)
