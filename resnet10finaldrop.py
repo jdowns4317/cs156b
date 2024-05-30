@@ -30,7 +30,7 @@ print(f"Using device: {device}")
 
 
 class ImageDataset(Dataset):
-    def __init__(self, dataframe, root_dir, transform=transforms.Normalize(mean=[0.485, 0.456, 0.406], std=[0.229, 0.224, 0.225]), test=False):
+    def __init__(self, dataframe, root_dir, transform=None, test=False):
         """
         Args:
             dataframe (DataFrame): DataFrame with image paths and optionally labels.
@@ -50,17 +50,18 @@ class ImageDataset(Dataset):
         img_name = os.path.join(self.root_dir, self.dataframe.iloc[idx]['Path'])
         image = cv2.imread(img_name, cv2.IMREAD_COLOR)
         image = cv2.resize(image, (256, 256))
-        image = np.transpose(image, (2, 0, 1))
         image = cv2.bilateralFilter(image, 5, 25, 25)
+        
+        # Convert the NumPy array to a PIL Image
+        image = Image.fromarray(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 
         if self.transform is not None:
-            augmentations = self.transform(image=image)
-            image = augmentations["image"]
-        
+            image = self.transform(image)
+
         if self.test:
             return image
         else:
-            label = self.dataframe.iloc[idx]['Feature']
+            label = int(self.dataframe.iloc[idx]['Feature'])
             label = torch.tensor(label, dtype=torch.long)
             return image, label
 
@@ -79,7 +80,7 @@ test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
 
 
 def create_feature_df(df, feature):
-    df = df[df['Path'].str.startswith('t')]
+    df = df[df['Path'].str.startswith('t')].copy()
     df.dropna(inplace=True)
     df = df[['Path', feature]].reset_index(drop=True)
     df.rename(columns={feature: 'Feature'}, inplace=True)
@@ -102,7 +103,7 @@ def train_nn(model, train_loader):
         print(f"DEBUG epoch: {epoch}")
         i = 0
         for data, target in train_loader:
-            data, target = data.to(device), target.to(device)
+            data, target = data.to(device, dtype=torch.float32), target.to(device, dtype=torch.float32).unsqueeze(1)
             optimizer.zero_grad()     # Zero the gradients
             output = model(data)      # Forward pass
             loss = loss_fn(output, target)  # Compute loss
@@ -126,10 +127,10 @@ def get_output(train_loader, test_loader):
     test_preds = []
     with torch.no_grad():
         for data in test_loader:
-            data = data.to(device)
+            data = data.to(device, dtype=torch.float32)
             output = model(data)
-            output = output.cpu().data.numpy()
-            test_preds.append(output)
+            output = output.cpu()
+            test_preds.extend(output.flatten().tolist())
 
     return test_preds
 
