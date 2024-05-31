@@ -1,14 +1,15 @@
 import pandas as pd
 import numpy as np
 
-model = "2resnetfinalparallel"
+model = "2densenetfinalparallel"
 
 features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
             'Lung Opacity', 'Pneumonia', 'Pleural Effusion', 'Pleural Other',
             'Fracture', 'Support Devices']
 
 # TODO change averages accordingly
-averages = ['Fracture', 'Lung Opacity', 'Pleural Other', 'Support Devices']
+# averages = ['Fracture', 'Lung Opacity', 'Pleural Other', 'Support Devices']
+averages = []
 
 labels = pd.read_csv('../../../data/student_labels/train2023.csv')
 test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
