@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-model = "2densenetfinalparallel"
+model = "10densenetfinaldrop"
 
 features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
             'Lung Opacity', 'Pneumonia', 'Pleural Effusion', 'Pleural Other',
@@ -27,5 +27,5 @@ for feature in features:
 
 data = pd.DataFrame(data_df)
 
-data.to_csv(f'results/best_{model}.csv', index=False)
+data.to_csv(f'results/joined_{model}.csv', index=False)
 print("done")

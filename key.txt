@@ -25,3 +25,16 @@ densenet:
 3 epochs: 
 5 epochs: 41750547-5
 10 epochs: 41750557-5
+
+submission order:
+joined_2resnetfinalparallel
+best_2resnetfinalparallel
+joined_5resnetfinalparallel
+joined_2densenetfinalparallel
+joined_10resnetfinalparallel
+joined_5densenetfinalparallel
+joined_10densenetfinalparallel
+joined_2resnetfinaldrop
+joined_5resnetfinaldrop
+joined_2densenetfinaldrop
+joined_5densenetfinaldrop
