@@ -76,7 +76,7 @@ transform = transforms.Compose([
 # Load CSVs
 print("DEBUG starting model")
 train_df = pd.read_csv('../../../data/student_labels/train2023.csv')
-test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
+test_df = pd.read_csv('../../../data/student_labels/solution_ids.csv')
 
 
 def create_feature_df(df, feature):
@@ -135,7 +135,7 @@ def get_output(train_loader, test_loader):
     return test_preds
 
 def create_test_df(test_df):
-    test_df = test_df[test_df['Path'].str.startswith('t')]
+    test_df = test_df.copy()
     test_df = test_df.reset_index(drop=True)
     return test_df
 
@@ -159,5 +159,5 @@ submission_df = pd.DataFrame(classification_dict)
 submission_df = submission_df.sort_values(by = "Id")
 
 feature_under = feature.replace(" ", "_")
-submission_df.to_csv(f'results/2resnetfinal{feature_under}.csv', index=False)
+submission_df.to_csv(f'solutionresults/2resnetfinal{feature_under}.csv', index=False)
 

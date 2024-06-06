@@ -16,7 +16,9 @@ for model in models:
                 with open(f'feature_{new_model}_{feature.lower().replace(" ", "_")}.sh', 'r') as f:
                     body = f.readlines()
                 
-                body = [line.replace("96", "72") for line in body]
+                # body = [line.replace("96", "48") for line in body]
+                body = [line.replace("cpus-per-task=1", "cpus-per-task=5") for line in body]
+
 
                 with open(f'feature_{new_model}_{feature.lower().replace(" ", "_")}.sh', 'w') as f:
                     f.writelines(body)

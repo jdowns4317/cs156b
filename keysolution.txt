@@ -1,0 +1,31 @@
+densenet:
+final:
+2 epochs: 
+5 epochs: 
+10 epochs 
+
+parallel:
+2 epochs: 41925036-4
+5 epochs: 41925046-4
+10 epochs: 41925116-4
+
+drop:
+2 epochs: 41925077-5
+5 epochs: 41925087-5
+10 epochs: 41925126-4
+
+resnet:
+final:
+2 epochs: 
+5 epochs: 
+10 epochs: 
+
+parallel:
+2 epochs: 41925057-5
+5 epochs: 41925067-5
+10 epochs: 41925136-4
+
+drop:
+2 epochs: 41925096-4
+5 epochs: 41925105-3
+10 epochs: 41925145-3

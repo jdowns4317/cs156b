@@ -1,7 +1,11 @@
 import pandas as pd
 import numpy as np
 
+<<<<<<< HEAD
 model = "10resnetfinaldrop"
+=======
+model = "2resnetfinalparallel"
+>>>>>>> 4780dcda4f32a04539c68b2274691d894d5dcd4b
 
 features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
             'Lung Opacity', 'Pneumonia', 'Pleural Effusion', 'Pleural Other',
@@ -27,5 +31,5 @@ for feature in features:
 
 data = pd.DataFrame(data_df)
 
-data.to_csv(f'results/joined_{model}.csv', index=False)
+data.to_csv(f'solutionresults/joined_{model}.csv', index=False)
 print("done")
