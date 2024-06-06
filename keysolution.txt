@@ -5,14 +5,14 @@ final:
 10 epochs 
 
 parallel:
-2 epochs: 41896156-4
-5 epochs: 41896165-3
-10 epochs: 41896195-3
+2 epochs: 41925036-4
+5 epochs: 41925046-4
+10 epochs: 41925116-4
 
 drop:
-2 epochs: 41896186-4
-5 epochs: 41896175-3
-10 epochs: 41896204-2
+2 epochs: 41925077-5
+5 epochs: 41925087-5
+10 epochs: 41925126-4
 
 resnet:
 final:
@@ -21,11 +21,11 @@ final:
 10 epochs: 
 
 parallel:
-2 epochs: 41896213-1
-5 epochs: 41896222-0
-10 epochs: 41896232-0
+2 epochs: 41925057-5
+5 epochs: 41925067-5
+10 epochs: 41925136-4
 
 drop:
-2 epochs: 41896241-9
-5 epochs: 41896251-9
-10 epochs: 41896260-8
+2 epochs: 41925096-4
+5 epochs: 41925105-3
+10 epochs: 41925145-3
