@@ -1,11 +1,7 @@
 import pandas as pd
 import numpy as np
 
-<<<<<<< HEAD
-model = "10resnetfinaldrop"
-=======
 model = "2resnetfinalparallel"
->>>>>>> 4780dcda4f32a04539c68b2274691d894d5dcd4b
 
 features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
             'Lung Opacity', 'Pneumonia', 'Pleural Effusion', 'Pleural Other',
@@ -16,7 +12,7 @@ features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
 averages = []
 
 labels = pd.read_csv('../../../data/student_labels/train2023.csv')
-test_df = pd.read_csv('../../../data/student_labels/test_ids.csv')
+test_df = pd.read_csv('../../../data/student_labels/solution_ids.csv')
 data_df = {}
 data_df['Id'] = list(test_df['Id'])
 
@@ -26,7 +22,7 @@ for feature in features:
         mean = labels[feature].mean()
         data_df[feature] = [mean] * len(data_df['Id'])
     else:
-        curr_df = pd.read_csv(f"results/{model}{feature.replace(' ', '_')}.csv")
+        curr_df = pd.read_csv(f"solutionresults/{model}{feature.replace(' ', '_')}.csv")
         data_df[feature] = curr_df[feature]
 
 data = pd.DataFrame(data_df)
