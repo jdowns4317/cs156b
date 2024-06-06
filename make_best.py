@@ -8,7 +8,7 @@ features_dict = {'No Finding': '2densenetfinaldrop',
                  'Pneumonia': '5resnetfinalparallel', 
                  'Pleural Effusion': '2densenetfinaldrop', 
                  'Pleural Other': 'average',
-                 'Fracture': '2densenetfinaldrop',
+                 'Fracture': '10resnetfinaldrop',
                  'Support Devices': '2resnetfinaldrop'}
 
 labels = pd.read_csv('../../../data/student_labels/train2023.csv')

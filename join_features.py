@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 
-model = "10densenetfinaldrop"
+model = "10resnetfinaldrop"
 
 features = ['No Finding', 'Enlarged Cardiomediastinum', 'Cardiomegaly',
             'Lung Opacity', 'Pneumonia', 'Pleural Effusion', 'Pleural Other',

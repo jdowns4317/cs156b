@@ -38,3 +38,5 @@ joined_2resnetfinaldrop
 joined_5resnetfinaldrop
 joined_2densenetfinaldrop
 joined_5densenetfinaldrop
+joined_10densenetfinaldrop
+joined_10resnetfinaldrop
